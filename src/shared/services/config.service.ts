@@ -2,12 +2,12 @@ import * as dotenv from 'dotenv';
 import * as Joi from 'joi';
 
 export interface DBConfig {
+  type: string;
   host: string;
   port: number;
-  user: string;
-  pass: string;
-  name: string;
-  log: boolean;
+  username: string;
+  password: string;
+  database: string;
 }
 
 export class ConfigService {
@@ -51,6 +51,17 @@ export class ConfigService {
 
   get port(): number {
     return Number(this.envConfig.PORT);
+  }
+
+  get db(): DBConfig {
+    return {
+      type: this.envConfig.DB_TYPE,
+      host: this.envConfig.DB_HOST,
+      port: Number(this.envConfig.DB_PORT),
+      username: this.envConfig.DB_USER,
+      password: this.envConfig.DB_PASS,
+      database: this.envConfig.DB_DATABASE,
+    };
   }
 
   private validateInput(
