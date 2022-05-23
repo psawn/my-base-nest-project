@@ -64,6 +64,10 @@ export class ConfigService {
     };
   }
 
+  get bcryptSalt(): number {
+    return Number(this.envConfig.BCRYPT_SALT);
+  }
+
   private validateInput(
     ...envConfig: dotenv.DotenvParseOutput[]
   ): dotenv.DotenvParseOutput {

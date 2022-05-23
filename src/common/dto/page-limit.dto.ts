@@ -5,16 +5,18 @@ export class PageLimitDto {
   @IsOptional()
   @IsNumberString()
   @ApiProperty({
-    description: 'page.',
+    description: 'Page.',
     example: '1',
+    required: false,
   })
   page?: number;
 
   @IsOptional()
   @IsNumberString()
   @ApiProperty({
-    description: 'items per page.',
+    description: 'Items per page.',
     example: '10',
+    required: false,
   })
   limit?: number;
 }

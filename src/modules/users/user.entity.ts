@@ -1,3 +1,4 @@
+import { hashPassword } from 'src/helpers/encrypt.helper';
 import {
   Entity,
   Column,
@@ -6,6 +7,7 @@ import {
   DeleteDateColumn,
   PrimaryGeneratedColumn,
   BaseEntity,
+  BeforeInsert,
 } from 'typeorm';
 
 @Entity({ name: 'users' })
@@ -30,4 +32,10 @@ export class User extends BaseEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt: Date;
+
+  // nếu không khởi tạo instance thì k trigger được before insert -> phèn
+  // @BeforeInsert()
+  // async hashPassword() {
+  //   this.password = await hashPassword(this.password);
+  // }
 }

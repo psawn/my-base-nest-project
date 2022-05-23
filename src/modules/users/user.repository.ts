@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TypeORMRepository } from 'src/common/typeorm.repository';
+import { hashPassword } from 'src/helpers/encrypt.helper';
 import { FilterUsersDto } from './dto/user.dto';
 import { User } from './user.entity';
 
@@ -23,5 +24,10 @@ export class UsersRepository extends TypeORMRepository<User> {
     }
 
     return this.paginate({ page, limit }, query);
+  }
+
+  async signUp(signUpDto: any) {
+    signUpDto.email = await hashPassword(signUpDto.email);
+    return await User.save(signUpDto);
   }
 }
