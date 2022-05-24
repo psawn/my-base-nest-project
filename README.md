@@ -45,5 +45,7 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 ## There are 2 branch of 2 structure:
-main: nest structure with file repository
-second-main: nest structure without file repository
+<ul>
+  <li>main: nest structure with file repository</li>
+  <li>second-main: nest structure without file repository</li>
+</ul>
