@@ -10,7 +10,9 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/common/custom-decorators/auth.decorator';
 import { customDecorators } from 'src/common/custom-decorators/custom-response.decorator';
+import { CheckPolicies } from 'src/common/custom-decorators/policies.decorator';
 import { Roles } from 'src/common/custom-decorators/role.decorator';
+import { Action, AppAbility } from '../casl/casl-ability.factory';
 import { FilterUsersDto, UpdateUserDto } from './dto/user.dto';
 import { UsersService } from './user.service';
 
@@ -22,6 +24,7 @@ export class UsersController {
 
   @Get()
   @Roles('admin')
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, 'all'))
   @ApiResponse({
     status: 200,
     description: 'Get users successfully.',

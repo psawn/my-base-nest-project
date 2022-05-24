@@ -4,6 +4,7 @@ import { hashPassword } from 'src/helpers/encrypt.helper';
 import { paginateData } from 'src/helpers/pagination.helper';
 import { Repository } from 'typeorm';
 import { SignUpDto } from '../auth/dto/auth.dto';
+import { Action, CaslAbilityFactory } from '../casl/casl-ability.factory';
 import { FilterUsersDto, UpdateUserDto } from './dto/user.dto';
 import { User } from './user.entity';
 
@@ -13,6 +14,7 @@ export class UsersService {
     // cách viết k tạo file repository
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly caslAbilityFactory: CaslAbilityFactory,
   ) {}
 
   async getAll(filterUsersDto: FilterUsersDto) {
@@ -31,6 +33,11 @@ export class UsersService {
     if (email) {
       query.andWhere('users.email = :email', { email });
     }
+
+    // const user = new User();
+    // user.role = 'user';
+    // const ability = this.caslAbilityFactory.createForUser(user);
+    // ability.can(Action.Manage, 'all');
 
     return await paginateData({ page, limit }, query);
   }

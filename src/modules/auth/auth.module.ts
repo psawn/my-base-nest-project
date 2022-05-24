@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from 'src/shared/services/config.service';
+import { CaslModule } from '../casl/casl.module';
 import { User } from '../users/user.entity';
 import { UsersService } from '../users/user.service';
 import { AuthController } from './auth.controller';
@@ -19,6 +20,7 @@ const configService = new ConfigService();
         expiresIn: configService.jwt.accessJWTExpire,
       },
     }),
+    CaslModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, ConfigService, UsersService],
