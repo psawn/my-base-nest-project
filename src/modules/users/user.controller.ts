@@ -26,7 +26,7 @@ export class UsersController {
   })
   @customDecorators()
   async get(@Query(ValidationPipe) filterUsersDto: FilterUsersDto) {
-    const user = await this.usersService.findByConditions(filterUsersDto);
+    const user = await this.usersService.getAll(filterUsersDto);
     return {
       data: user,
     };
