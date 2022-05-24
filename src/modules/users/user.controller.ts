@@ -14,6 +14,7 @@ import { CheckPolicies } from 'src/common/custom-decorators/policies.decorator';
 import { Roles } from 'src/common/custom-decorators/role.decorator';
 import { Action, AppAbility } from '../casl/casl-ability.factory';
 import { FilterUsersDto, UpdateUserDto } from './dto/user.dto';
+import { User } from './user.entity';
 import { UsersService } from './user.service';
 
 @Auth()
@@ -24,7 +25,7 @@ export class UsersController {
 
   @Get()
   @Roles('admin')
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, 'all'))
+  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, User))
   @ApiResponse({
     status: 200,
     description: 'Get users successfully.',

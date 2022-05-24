@@ -28,10 +28,9 @@ export class CaslAbilityFactory {
     >(Ability as AbilityClass<AppAbility>);
 
     if (user.role == 'admin') {
-      //can(Action.Manage, 'all'); // read-write access to everything
-      cannot(Action.Read, 'all');
+      can(Action.Read, User);
     } else {
-      can(Action.Read, 'all'); // read-only access to everything
+      cannot(Action.Read, User);
     }
 
     return build({
