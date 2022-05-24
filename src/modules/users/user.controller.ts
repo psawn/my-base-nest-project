@@ -9,7 +9,9 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/common/custom-decorators/auth.decorator';
+// import { Auth } from 'src/common/custom-decorators/auth.decorator';
 import { customDecorators } from 'src/common/custom-decorators/custom-response.decorator';
+import { Roles } from 'src/common/custom-decorators/role.decorator';
 import { FilterUsersDto, UpdateUserDto } from './dto/user.dto';
 import { UsersService } from './user.service';
 
@@ -20,6 +22,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @Roles('admin')
   @ApiResponse({
     status: 200,
     description: 'Get users successfully.',
