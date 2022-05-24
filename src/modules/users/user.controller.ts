@@ -1,9 +1,19 @@
-import { Controller, Get, Query, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Query,
+  Req,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Auth } from 'src/common/custom-decorators/auth.decorator';
 import { customDecorators } from 'src/common/custom-decorators/custom-response.decorator';
-import { FilterUsersDto } from './dto/user.dto';
+import { FilterUsersDto, UpdateUserDto } from './dto/user.dto';
 import { UsersService } from './user.service';
 
+@Auth()
 @ApiTags('User')
 @Controller('users')
 export class UsersController {
@@ -19,6 +29,24 @@ export class UsersController {
     const user = await this.usersService.findByConditions(filterUsersDto);
     return {
       data: user,
+    };
+  }
+
+  @Patch()
+  @ApiResponse({
+    status: 200,
+    description: 'Update user successfully.',
+  })
+  @customDecorators()
+  async update(
+    @Req() request: any,
+    // set whitelist = true sẽ loại bỏ các property không được định nghĩa
+    @Body(new ValidationPipe({ whitelist: true })) updateUserDto: UpdateUserDto,
+  ) {
+    const data = await this.usersService.update(request, updateUserDto);
+    return {
+      message: 'Update user successfully.',
+      data: data,
     };
   }
 }

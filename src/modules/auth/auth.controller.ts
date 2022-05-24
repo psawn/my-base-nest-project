@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { customDecorators } from 'src/common/custom-decorators/custom-response.decorator';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
-import { SignUpDto } from './dto/auth.dto';
+import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 
 @ApiTags('Auth')
@@ -20,6 +20,20 @@ export class AuthController {
     await this.authService.signUp(signUpDto);
     return {
       message: 'Create user successfully.',
+    };
+  }
+
+  @Post('/signin')
+  @ApiResponse({
+    status: 200,
+    description: 'Login successfully.',
+  })
+  @customDecorators()
+  async signIn(@Body(ValidationPipe) signInDto: SignInDto) {
+    const data = await this.authService.signIn(signInDto);
+    return {
+      message: 'Login successfully.',
+      data,
     };
   }
 }

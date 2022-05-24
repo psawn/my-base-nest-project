@@ -10,6 +10,13 @@ export interface DBConfig {
   database: string;
 }
 
+export interface JWTConfig {
+  accessJWTSecret: string;
+  accessJWTExpire: string;
+  refreshJWTSecret: string;
+  refreshJWTExpire: string;
+}
+
 export class ConfigService {
   private readonly envConfig: dotenv.DotenvParseOutput;
   private readonly validationScheme = {
@@ -61,6 +68,15 @@ export class ConfigService {
       username: this.envConfig.DB_USER,
       password: this.envConfig.DB_PASS,
       database: this.envConfig.DB_DATABASE,
+    };
+  }
+
+  get jwt(): JWTConfig {
+    return {
+      accessJWTSecret: this.envConfig.ACCESS_JWT_SECRET,
+      accessJWTExpire: this.envConfig.ACCESS_JWT_EXPIRES_IN,
+      refreshJWTSecret: this.envConfig.REFRESH_JWT_SECRET,
+      refreshJWTExpire: this.envConfig.REFRESH_JWT_EXPIRES_IN,
     };
   }
 

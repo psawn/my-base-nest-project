@@ -1,4 +1,5 @@
 import { hashPassword } from 'src/helpers/encrypt.helper';
+import * as bcrypt from 'bcrypt';
 import {
   Entity,
   Column,
@@ -32,6 +33,11 @@ export class User extends BaseEntity {
 
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt: Date;
+
+  async validatePassword(password: string): Promise<boolean> {
+    const hashPassword = await bcrypt.compare(password, this.password);
+    return hashPassword;
+  }
 
   // nếu không khởi tạo instance thì k trigger được before insert -> phèn
   // @BeforeInsert()

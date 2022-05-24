@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 import { PageLimitDto } from 'src/common/dto/page-limit.dto';
 
 export class FilterUsersDto extends PageLimitDto {
@@ -11,4 +11,15 @@ export class FilterUsersDto extends PageLimitDto {
     required: false,
   })
   email?: string;
+}
+
+export class UpdateUserDto {
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: 'Phone',
+    example: '0972055909',
+    required: false,
+  })
+  phone?: string;
 }

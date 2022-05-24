@@ -27,7 +27,15 @@ export class UsersRepository extends TypeORMRepository<User> {
   }
 
   async signUp(signUpDto: any) {
-    signUpDto.email = await hashPassword(signUpDto.email);
+    signUpDto.password = await hashPassword(signUpDto.password);
     return await User.save(signUpDto);
+  }
+
+  async findOneByConditions(conditions: any): Promise<User> {
+    return await User.findOne(conditions);
+  }
+
+  async update(data: any) {
+    return await User.save(data);
   }
 }
