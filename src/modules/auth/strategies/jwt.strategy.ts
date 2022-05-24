@@ -26,7 +26,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         email: payload.email,
       },
     });
+    const { password, ...result } = user;
+    return result;
 
-    return omit(user, ['password']);
+    //return omit(user, ['password']);
   }
 }
