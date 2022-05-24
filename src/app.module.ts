@@ -21,14 +21,14 @@ import { SharedModule } from './shared/shared.module';
   providers: [
     AppService,
     // JwtAuthGuard và RolesGuard trở thành global scope, phải theo đúng thứ tự JwtAuthGuard->RolesGuard (C2)
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RolesGuard,
+    // },
   ],
 })
 export class AppModule {}
