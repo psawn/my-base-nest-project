@@ -13,6 +13,6 @@ export function Auth() {
       PoliciesGuard,
     ),
     ApiBearerAuth(),
-    ApiUnauthorizedResponse({ description: 'Unauthorized"' }),
+    ApiUnauthorizedResponse({ description: 'Unauthorized' }),
   );
 }

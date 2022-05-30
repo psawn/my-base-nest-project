@@ -62,4 +62,16 @@ export class UsersService {
     signUpDto.password = await hashPassword(signUpDto.password);
     return await this.userRepository.save(signUpDto);
   }
+
+  async softDelete(id: string) {
+    const existUser = await this.findByConditions({
+      where: { id: id },
+    });
+
+    if (!existUser) {
+      throw new BadRequestException();
+    }
+
+    await this.userRepository.softDelete({ id });
+  }
 }

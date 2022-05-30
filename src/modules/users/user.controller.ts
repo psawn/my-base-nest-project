@@ -1,6 +1,8 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Param,
@@ -21,6 +23,7 @@ import {
   AppAbility,
   CaslAbilityFactory,
 } from '../casl/casl-ability.factory';
+import { ReadAllPolicyHandler } from '../casl/ReadAllPolicyHandler';
 import { FilterUsersDto, UpdateUserDto } from './dto/user.dto';
 import { User } from './user.entity';
 import { UsersService } from './user.service';
@@ -36,7 +39,8 @@ export class UsersController {
 
   @Get()
   @Roles('admin')
-  @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, 'all'))
+  // @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, User))
+  @CheckPolicies(new ReadAllPolicyHandler())
   @ApiResponse({
     status: 200,
     description: 'Get users successfully.',
@@ -78,6 +82,7 @@ export class UsersController {
     const user = new User();
     user.id = id;
     const ability = this.caslAbilityFactory.createForUser(request.user);
+
     if (ability.can(Action.Read, user) == false) {
       throw new ForbiddenException();
     }
@@ -89,6 +94,31 @@ export class UsersController {
     return {
       message: 'Get user successfully.',
       data: data,
+    };
+  }
+
+  @Roles('admin')
+  @Delete('/:id')
+  @ApiResponse({
+    status: 200,
+    description: 'Delete user successfully.',
+  })
+  @customDecorators()
+  async softDelete(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() request: any,
+  ) {
+    const user = new User();
+    user.id = id;
+    const ability = this.caslAbilityFactory.createForUser(request.user);
+
+    if (ability.cannot(Action.Delete, user) == false) {
+      throw new BadRequestException();
+    }
+
+    await this.usersService.softDelete(id);
+    return {
+      message: 'Delete user successfully.',
     };
   }
 }

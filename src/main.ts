@@ -8,6 +8,7 @@ import { setupSwagger } from './swagger';
 async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
   const configService = app.select(SharedModule).get(ConfigService);
   // dùng app.select.get để tránh lỗi khi có các dependency phụ thuộc 2 chiều vào nhau
   // const configService = new ConfigService();
