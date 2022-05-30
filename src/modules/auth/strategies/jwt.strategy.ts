@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // tự dộng add user vào request nếu có jwt payload, sử dụng = request.user -> chưa hiểu cách hoạt động
   async validate(payload: any) {
-    const user = await this.usersService.findOneByConditions({
+    const user = await this.usersService.findByConditions({
       where: {
         id: payload.id,
         email: payload.email,
@@ -28,6 +28,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
     const { password, ...result } = user;
     return result;
-    // return omit(user, ['password']);
+
+    //return omit(user, ['password']);
   }
 }
