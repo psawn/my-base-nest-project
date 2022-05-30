@@ -9,7 +9,6 @@ import { JwtAuthGuard } from './modules/auth/guards/auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { UserModule } from './modules/users/user.module';
 import { SharedModule } from './shared/shared.module';
-import { CaslModule } from './modules/casl/casl.module';
 
 @Module({
   imports: [
@@ -17,7 +16,6 @@ import { CaslModule } from './modules/casl/casl.module';
     SharedModule,
     UserModule,
     AuthModule,
-    CaslModule,
   ],
   controllers: [AppController],
   providers: [
