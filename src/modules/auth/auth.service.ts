@@ -1,23 +1,23 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SignInDto, SignUpDto } from './dto/auth.dto';
+import { UsersRepository } from '../users/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from 'src/shared/services/config.service';
-import { UsersService } from '../users/user.service';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly usersRepository: UsersRepository,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
-    return await this.usersService.signUp(signUpDto);
+    return await this.usersRepository.signUp(signUpDto);
   }
 
   async signIn(signInDto: SignInDto) {
     const { email, password } = signInDto;
-    const user = await this.usersService.findByConditions({
+    const user = await this.usersRepository.findOneByConditions({
       where: {
         email: email,
       },

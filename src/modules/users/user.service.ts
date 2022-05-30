@@ -1,65 +1,40 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { hashPassword } from 'src/helpers/encrypt.helper';
-import { paginateData } from 'src/helpers/pagination.helper';
 import { Repository } from 'typeorm';
-import { SignUpDto } from '../auth/dto/auth.dto';
 import { FilterUsersDto, UpdateUserDto } from './dto/user.dto';
 import { User } from './user.entity';
+import { UsersRepository } from './user.repository';
 
 @Injectable()
 export class UsersService {
   constructor(
     // cách viết k tạo file repository
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    // @InjectRepository(User)
+    // private readonly userRepository: Repository<User>,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
-  async getAll(filterUsersDto: FilterUsersDto) {
-    const { page, limit, email } = filterUsersDto;
-    const query = this.userRepository.createQueryBuilder('users');
+  async findByConditions(filterUsersDto: FilterUsersDto) {
+    const users = await this.usersRepository.findByConditions(filterUsersDto);
 
-    query.select([
-      'users.id',
-      'users.email',
-      'users.phone',
-      'users.created_at',
-      'users.updated_at',
-      'users.deleted_at',
-    ]);
-
-    if (email) {
-      query.andWhere('users.email = :email', { email });
+    if (!users) {
+      throw new NotFoundException();
     }
 
-    return await paginateData({ page, limit }, query);
+    return users;
   }
 
-  async findByConditions(conditions: any) {
-    return await this.userRepository.findOne(conditions);
+  async findOneByConditions(conditions: any) {
+    return await this.usersRepository.findOneByConditions(conditions);
   }
 
   async update(request: any, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOne({
+    const user = await this.usersRepository.findOneByConditions({
       where: {
         id: request.user.id,
       },
     });
     const data = { ...updateUserDto, id: user.id };
-    return await this.userRepository.save(data);
-  }
-
-  async signUp(signUpDto: SignUpDto) {
-    const { email } = signUpDto;
-    const existUser = await this.userRepository.findOne({
-      where: { email: email },
-    });
-
-    if (existUser) {
-      throw new BadRequestException('Email already exists');
-    }
-
-    signUpDto.password = await hashPassword(signUpDto.password);
-    return await this.userRepository.save(signUpDto);
+    return await this.usersRepository.update(data);
   }
 }
