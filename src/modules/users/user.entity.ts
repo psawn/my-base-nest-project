@@ -34,6 +34,9 @@ export class User extends BaseEntity {
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt: Date;
 
+  @Column({ name: 'role', default: null })
+  role: string;
+
   async validatePassword(password: string): Promise<boolean> {
     const hashPassword = await bcrypt.compare(password, this.password);
     return hashPassword;
