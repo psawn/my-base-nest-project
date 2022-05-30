@@ -14,6 +14,7 @@ export enum Action {
   Read = 'read',
   Update = 'update',
   Delete = 'delete',
+  DKM = 'dkm',
 }
 
 type Subjects = InferSubjects<any | typeof User> | 'all';
@@ -28,10 +29,13 @@ export class CaslAbilityFactory {
     >(Ability as AbilityClass<AppAbility>);
 
     if (user.role == 'admin') {
-      can(Action.Read, User);
-    } else {
-      cannot(Action.Read, User);
+      // set action = manage + subject = all thì bên controller set thế nào cũng được
+      // set action = manage thì chỉ cần trùng subject, action nào cũng được
+      // set subject = all thì chỉ cần trùng action, subject nào cũng được
+      can(Action.Read, 'all');
     }
+
+    can(Action.Read, User, { id: user.id });
 
     return build({
       detectSubjectType: (item) =>
