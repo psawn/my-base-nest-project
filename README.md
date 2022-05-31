@@ -45,29 +45,18 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Migration
-
+## Run migration
 
 ```bash
-# run migration
 npm run migration:up
-```
-
-OR
-
-```bash
+# or
 npx typeorm-ts-node-commonjs migration:run -d src/database/migration_typeorm.config.ts
 ```
 
-<h3>Create migration</h3>
+## Create migration
 
 ```bash
 npm run migration:create <Table_name>
-```
-
-OR
-
-```bash
+# or
 npx typeorm migration:create <Table_name>
 ```
-
