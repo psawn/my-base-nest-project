@@ -7,6 +7,7 @@ import { User } from '../users/user.entity';
 import { UsersService } from '../users/user.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 const configService = new ConfigService();
@@ -23,7 +24,13 @@ const configService = new ConfigService();
     CaslModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, ConfigService, UsersService],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    ConfigService,
+    UsersService,
+    GoogleStrategy,
+  ],
   exports: [],
 })
 export class AuthModule {}

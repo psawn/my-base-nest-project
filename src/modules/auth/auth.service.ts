@@ -45,4 +45,13 @@ export class AuthService {
 
     throw new BadRequestException('Invalid credentials');
   }
+
+  async googleLogin(req: any) {
+    if (!req.user) {
+      return 'No user from google';
+    }
+    return {
+      user: req.user,
+    };
+  }
 }
