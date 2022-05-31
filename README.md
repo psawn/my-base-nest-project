@@ -46,10 +46,11 @@ $ npm run start:prod
 ```
 
 ## Migration
-<h3>Run migration</h3>
+
 
 ```bash
- npm run migration:up
+# run migration
+npm run migration:up
 ```
 
 OR
