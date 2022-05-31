@@ -28,7 +28,7 @@ export class ConfigService {
     DB_HOST: Joi.string().required(),
     DB_USER: Joi.string().required(),
     DB_PASS: Joi.string().required(),
-    DB_SYNCHRONIZE: Joi.boolean().default(true),
+    DB_SYNCHRONIZE: Joi.boolean().default(false),
 
     ACCESS_JWT_EXPIRES_IN: Joi.string().required(),
     ACCESS_JWT_SECRET: Joi.string().required(),
