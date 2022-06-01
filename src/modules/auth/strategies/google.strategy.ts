@@ -10,15 +10,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientSecret: process.env.GOOGLE_SECRET,
       callbackURL: 'http://localhost:3000/api/auth/google/callback',
       scope: ['email', 'profile'],
+      // prompt không hoạt động -> phải tạo 1 class AuthGoogle extend AuthGuard('google')
+      prompt: 'select_account',
       // set accessType = offfline để lấy refresh Token
-      accessType: 'offline',
+      // accessType: 'offline',
     });
-  }
-
-  authorizationParams(): { [key: string]: string } {
-    return {
-      access_type: 'offline',
-    };
   }
 
   async validate(

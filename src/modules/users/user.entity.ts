@@ -19,7 +19,7 @@ export class User extends BaseEntity {
   @Column({ name: 'email' })
   email: string;
 
-  @Column({ name: 'password' })
+  @Column({ name: 'password', nullable: true })
   password: string;
 
   @Column({ name: 'phone', nullable: true })
@@ -36,6 +36,9 @@ export class User extends BaseEntity {
 
   @Column({ name: 'role', default: null })
   role: string;
+
+  @Column({ name: 'auth_type', nullable: true })
+  authType: string;
 
   async validatePassword(password: string): Promise<boolean> {
     const hashPassword = await bcrypt.compare(password, this.password);

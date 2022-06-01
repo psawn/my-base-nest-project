@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthGoogle } from './guards/google.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -39,13 +40,13 @@ export class AuthController {
   }
 
   @Get('/google')
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(AuthGoogle)
   async googleAuth() {
     return;
   }
 
   @Get('/google/callback')
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(AuthGoogle)
   async googleAuthRedirect(@Req() req: any) {
     return this.authService.googleLogin(req);
   }

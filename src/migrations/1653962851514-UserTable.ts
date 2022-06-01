@@ -20,6 +20,7 @@ export class UserTable1653962851514 implements MigrationInterface {
           {
             name: 'password',
             type: 'varchar',
+            isNullable: true,
           },
           {
             name: 'phone',
@@ -44,6 +45,11 @@ export class UserTable1653962851514 implements MigrationInterface {
           },
           {
             name: 'role',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'auth_type',
             type: 'varchar',
             isNullable: true,
           },
