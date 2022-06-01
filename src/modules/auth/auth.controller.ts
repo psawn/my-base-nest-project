@@ -40,7 +40,7 @@ export class AuthController {
 
   @Get('/google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req: any) {
+  async googleAuth() {
     return;
   }
 

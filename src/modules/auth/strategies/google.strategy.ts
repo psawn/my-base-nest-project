@@ -6,12 +6,19 @@ import { Injectable } from '@nestjs/common';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {
     super({
-      clientID:
-        '835019236072-nep8cp6tu75tdv66beiii2pf1jai3oub.apps.googleusercontent.com',
-      clientSecret: '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',
+      clientID: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
       callbackURL: 'http://localhost:3000/api/auth/google/callback',
       scope: ['email', 'profile'],
+      // set accessType = offfline để lấy refresh Token
+      accessType: 'offline',
     });
+  }
+
+  authorizationParams(): { [key: string]: string } {
+    return {
+      access_type: 'offline',
+    };
   }
 
   async validate(
