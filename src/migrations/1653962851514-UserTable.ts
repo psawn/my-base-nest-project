@@ -49,7 +49,12 @@ export class UserTable1653962851514 implements MigrationInterface {
             isNullable: true,
           },
           {
-            name: 'auth_type',
+            name: 'google_id',
+            type: 'varchar',
+            isNullable: true,
+          },
+          {
+            name: 'facebook_id',
             type: 'varchar',
             isNullable: true,
           },

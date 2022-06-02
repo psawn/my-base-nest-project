@@ -17,6 +17,11 @@ export interface JWTConfig {
   refreshJWTExpire: string;
 }
 
+export interface GGConfig {
+  googleId: string;
+  googleSecret: string;
+}
+
 export class ConfigService {
   private readonly envConfig: dotenv.DotenvParseOutput;
   private readonly validationScheme = {
@@ -36,6 +41,9 @@ export class ConfigService {
     REFRESH_JWT_SECRET: Joi.string().required(),
 
     BCRYPT_SALT: Joi.number().required().default(10),
+
+    GOOGLE_ID: Joi.string().required(),
+    GOOGLE_SECRET: Joi.string().required(),
   };
 
   constructor() {
@@ -82,6 +90,13 @@ export class ConfigService {
 
   get bcryptSalt(): number {
     return Number(this.envConfig.BCRYPT_SALT);
+  }
+
+  get gg(): GGConfig {
+    return {
+      googleId: this.envConfig.GOOGLE_ID,
+      googleSecret: this.envConfig.GOOGLE_SECRET,
+    };
   }
 
   private validateInput(

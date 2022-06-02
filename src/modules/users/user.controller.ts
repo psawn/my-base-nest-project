@@ -89,6 +89,7 @@ export class UsersController {
 
     const data = await this.usersService.findByConditions({
       where: { id: id },
+      select: ['id', 'email', 'phone', 'createdAt', 'updatedAt'],
     });
 
     return {

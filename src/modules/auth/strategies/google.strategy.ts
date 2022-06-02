@@ -1,16 +1,17 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth2';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from 'src/shared/services/config.service';
 
 @Injectable()
-export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor() {
+export class GoogleStrategy extends PassportStrategy(Strategy) {
+  constructor(private readonly configService: ConfigService) {
     super({
-      clientID: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
+      clientID: configService.gg.googleId,
+      clientSecret: configService.gg.googleSecret,
       callbackURL: 'http://localhost:3000/api/auth/google/callback',
       scope: ['email', 'profile'],
-      // prompt không hoạt động -> phải tạo 1 class AuthGoogle extend AuthGuard('google')
+      // prompt không hoạt động -> phải tạo 1 class AuthGoogle extend AuthGuard('google') (chưa hiểu)
       prompt: 'select_account',
       // set accessType = offfline để lấy refresh Token
       // accessType: 'offline',
@@ -23,14 +24,11 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    const { name, emails, photos } = profile;
+    const { email, id } = profile;
     const user = {
-      email: emails[0].value,
-      firstName: name.givenName,
-      lastName: name.familyName,
-      picture: photos[0].value,
+      email: email,
+      googleId: id,
       accessToken,
-      refreshToken,
     };
     done(null, user);
   }

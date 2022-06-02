@@ -23,24 +23,10 @@ export class AuthService {
       },
     });
 
-    if (user && user.validatePassword(password)) {
-      const payload = {
-        id: user.id,
-        email: user.email,
-      };
-      const accessToken = await this.jwtService.signAsync(payload, {
-        secret: this.configService.jwt.accessJWTSecret,
-        expiresIn: this.configService.jwt.accessJWTExpire,
-      });
-      const refreshToken = await this.jwtService.signAsync(
-        { id: user.id },
-        {
-          secret: this.configService.jwt.accessJWTSecret,
-          expiresIn: this.configService.jwt.accessJWTExpire,
-        },
-      );
-
-      return { accessToken, refreshToken };
+    if (user && (await user.validatePassword(password))) {
+      console.log(user);
+      console.log(user.validatePassword(password));
+      return await this.generateToken(user);
     }
 
     throw new BadRequestException('Invalid credentials');
@@ -50,8 +36,43 @@ export class AuthService {
     if (!req.user) {
       return 'No user from google';
     }
-    return {
-      user: req.user,
+
+    const { email, googleId } = req.user;
+
+    let user = await this.usersService.findByConditions({
+      where: {
+        email: req.user.email,
+      },
+    });
+
+    if (!user) {
+      const data = {
+        email: email,
+        googleId: googleId,
+      };
+      user = await this.usersService.generateUser(data);
+    }
+
+    return await this.generateToken(user);
+  }
+
+  async generateToken(user: any) {
+    const payload = {
+      id: user.id,
+      email: user.email,
     };
+    const accessToken = await this.jwtService.signAsync(payload, {
+      secret: this.configService.jwt.accessJWTSecret,
+      expiresIn: this.configService.jwt.accessJWTExpire,
+    });
+    const refreshToken = await this.jwtService.signAsync(
+      { id: user.id },
+      {
+        secret: this.configService.jwt.accessJWTSecret,
+        expiresIn: this.configService.jwt.accessJWTExpire,
+      },
+    );
+
+    return { accessToken, refreshToken };
   }
 }

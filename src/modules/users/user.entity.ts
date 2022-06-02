@@ -37,12 +37,17 @@ export class User extends BaseEntity {
   @Column({ name: 'role', default: null })
   role: string;
 
-  @Column({ name: 'auth_type', nullable: true })
-  authType: string;
+  @Column({ name: 'google_id', nullable: true })
+  googleId: string;
+
+  @Column({ name: 'facebook_id', nullable: true })
+  facebookId: string;
 
   async validatePassword(password: string): Promise<boolean> {
-    const hashPassword = await bcrypt.compare(password, this.password);
-    return hashPassword;
+    if (this.password && password && String(password).trim()) {
+      return await bcrypt.compare(password, this.password);
+    }
+    return false;
   }
 
   // nếu không khởi tạo instance thì k trigger được before insert -> phèn

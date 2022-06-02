@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { customDecorators } from 'src/common/custom-decorators/custom-response.decorator';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
@@ -13,6 +21,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/signup')
+  @HttpCode(200)
   @ApiResponse({
     status: 201,
     description: 'Create user successfully.',
@@ -26,6 +35,7 @@ export class AuthController {
   }
 
   @Post('/signin')
+  @HttpCode(200)
   @ApiResponse({
     status: 200,
     description: 'Login successfully.',
@@ -48,6 +58,10 @@ export class AuthController {
   @Get('/google/callback')
   @UseGuards(AuthGoogle)
   async googleAuthRedirect(@Req() req: any) {
-    return this.authService.googleLogin(req);
+    const data = await this.authService.googleLogin(req);
+    return {
+      message: 'Login successfully.',
+      data,
+    };
   }
 }
