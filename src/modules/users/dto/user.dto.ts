@@ -23,3 +23,24 @@ export class UpdateUserDto {
   })
   phone?: string;
 }
+
+export class NewPasswordDto {
+  @IsString()
+  @ApiProperty({
+    description: 'New password',
+    example: '123456',
+    required: true,
+  })
+  newPassword: string;
+}
+
+export class ChangePasswordDto extends NewPasswordDto {
+  @IsOptional()
+  @IsString()
+  @ApiProperty({
+    description: 'Current password',
+    example: '123456',
+    required: true,
+  })
+  currentPassword: string;
+}

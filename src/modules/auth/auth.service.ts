@@ -61,7 +61,7 @@ export class AuthService {
 
   async facebookLogin(req: any) {
     if (!req.user) {
-      return 'No user from google';
+      return 'No user from facebook';
     }
 
     const { email, id } = req.user;

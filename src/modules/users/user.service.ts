@@ -4,8 +4,14 @@ import { hashPassword } from 'src/helpers/encrypt.helper';
 import { paginateData } from 'src/helpers/pagination.helper';
 import { Repository } from 'typeorm';
 import { SignUpDto } from '../auth/dto/auth.dto';
-import { FilterUsersDto, UpdateUserDto } from './dto/user.dto';
+import {
+  ChangePasswordDto,
+  FilterUsersDto,
+  NewPasswordDto,
+  UpdateUserDto,
+} from './dto/user.dto';
 import { User } from './user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -39,13 +45,13 @@ export class UsersService {
     return await this.userRepository.findOne(conditions);
   }
 
-  async update(request: any, updateUserDto: UpdateUserDto) {
+  async update(request: any, updateField: any) {
     const user = await this.userRepository.findOne({
       where: {
         id: request.user.id,
       },
     });
-    const data = { ...updateUserDto, id: user.id };
+    const data = { ...updateField, id: user.id };
     return await this.userRepository.save(data);
   }
 
@@ -77,5 +83,40 @@ export class UsersService {
 
   async generateUser(data: any) {
     return await this.userRepository.save(data);
+  }
+
+  async updatePassword(request: any, changePasswordDto: ChangePasswordDto) {
+    const { currentPassword, newPassword } = changePasswordDto;
+    const user = await this.findByConditions({
+      where: {
+        id: request.user.id,
+      },
+    });
+
+    if (bcrypt.compareSync(currentPassword, user.password) === false) {
+      throw new BadRequestException('Current password is incorrect');
+    }
+    if (bcrypt.compareSync(newPassword, user.password) === true) {
+      throw new BadRequestException(
+        'New password need be different from current password',
+      );
+    }
+    user.password = await hashPassword(newPassword);
+    await user.save();
+  }
+
+  async setPassword(request: any, newPasswordDto: NewPasswordDto) {
+    const user = await this.findByConditions({
+      where: {
+        id: request.user.id,
+      },
+    });
+
+    if (!user.password && (user.googleId || user.facebookId)) {
+      user.password = await hashPassword(newPasswordDto.newPassword);
+      return await user.save();
+    }
+
+    throw new BadRequestException('User already has password');
   }
 }

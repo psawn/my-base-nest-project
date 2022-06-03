@@ -24,6 +24,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
+    // https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=
     const { email, id } = profile;
     const user = {
       email,

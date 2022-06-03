@@ -10,6 +10,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { UserModule } from './modules/users/user.module';
 import { SharedModule } from './shared/shared.module';
 import { CaslModule } from './modules/casl/casl.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CaslModule } from './modules/casl/casl.module';
     UserModule,
     AuthModule,
     CaslModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [

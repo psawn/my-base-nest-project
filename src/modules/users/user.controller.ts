@@ -17,6 +17,7 @@ import { Auth } from 'src/common/custom-decorators/auth.decorator';
 // import { Auth } from 'src/common/custom-decorators/auth.decorator';
 import { customDecorators } from 'src/common/custom-decorators/custom-response.decorator';
 import { CheckPolicies } from 'src/common/custom-decorators/policies.decorator';
+import { Public } from 'src/common/custom-decorators/public.decorator';
 import { Roles } from 'src/common/custom-decorators/role.decorator';
 import {
   Action,
@@ -24,7 +25,12 @@ import {
   CaslAbilityFactory,
 } from '../casl/casl-ability.factory';
 import { ReadAllPolicyHandler } from '../casl/ReadAllPolicyHandler';
-import { FilterUsersDto, UpdateUserDto } from './dto/user.dto';
+import {
+  ChangePasswordDto,
+  FilterUsersDto,
+  NewPasswordDto,
+  UpdateUserDto,
+} from './dto/user.dto';
 import { User } from './user.entity';
 import { UsersService } from './user.service';
 
@@ -120,6 +126,40 @@ export class UsersController {
     await this.usersService.softDelete(id);
     return {
       message: 'Delete user successfully.',
+    };
+  }
+
+  @Patch('/password')
+  @ApiResponse({
+    status: 200,
+    description: 'Update password successfully.',
+  })
+  @customDecorators()
+  async changePassword(
+    @Req() request: any,
+    @Body(new ValidationPipe({ whitelist: true }))
+    changePasswordDto: ChangePasswordDto,
+  ) {
+    await this.usersService.updatePassword(request, changePasswordDto);
+    return {
+      message: 'Update user successfully.',
+    };
+  }
+
+  @Patch('/setPassword')
+  @ApiResponse({
+    status: 200,
+    description: 'Update password successfully.',
+  })
+  @customDecorators()
+  async setPassword(
+    @Req() request: any,
+    @Body(new ValidationPipe({ whitelist: true }))
+    newPasswordDto: NewPasswordDto,
+  ) {
+    await this.usersService.setPassword(request, newPasswordDto);
+    return {
+      message: 'Update user successfully.',
     };
   }
 }
