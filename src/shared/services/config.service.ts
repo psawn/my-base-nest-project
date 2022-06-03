@@ -22,6 +22,11 @@ export interface GGConfig {
   googleSecret: string;
 }
 
+export interface FBConfig {
+  facebookId: string;
+  facebookSecret: string;
+}
+
 export class ConfigService {
   private readonly envConfig: dotenv.DotenvParseOutput;
   private readonly validationScheme = {
@@ -44,6 +49,9 @@ export class ConfigService {
 
     GOOGLE_ID: Joi.string().required(),
     GOOGLE_SECRET: Joi.string().required(),
+
+    FACEBOOK_ID: Joi.string().required(),
+    FACEBOOK_SECRET: Joi.string().required(),
   };
 
   constructor() {
@@ -96,6 +104,13 @@ export class ConfigService {
     return {
       googleId: this.envConfig.GOOGLE_ID,
       googleSecret: this.envConfig.GOOGLE_SECRET,
+    };
+  }
+
+  get fb(): FBConfig {
+    return {
+      facebookId: this.envConfig.FACEBOOK_ID,
+      facebookSecret: this.envConfig.FACEBOOK_SECRET,
     };
   }
 

@@ -7,6 +7,7 @@ import { User } from '../users/user.entity';
 import { UsersService } from '../users/user.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { FacebookStrategy } from './strategies/facebook.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
@@ -30,6 +31,7 @@ const configService = new ConfigService();
     ConfigService,
     UsersService,
     GoogleStrategy,
+    FacebookStrategy,
   ],
   exports: [],
 })

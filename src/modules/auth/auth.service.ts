@@ -24,8 +24,6 @@ export class AuthService {
     });
 
     if (user && (await user.validatePassword(password))) {
-      console.log(user);
-      console.log(user.validatePassword(password));
       return await this.generateToken(user);
     }
 
@@ -41,7 +39,7 @@ export class AuthService {
 
     let user = await this.usersService.findByConditions({
       where: {
-        email: req.user.email,
+        email: email,
       },
     });
 
@@ -51,6 +49,40 @@ export class AuthService {
         googleId: googleId,
       };
       user = await this.usersService.generateUser(data);
+    }
+
+    if (!user.googleId) {
+      user.googleId = googleId;
+      await user.save();
+    }
+
+    return await this.generateToken(user);
+  }
+
+  async facebookLogin(req: any) {
+    if (!req.user) {
+      return 'No user from google';
+    }
+
+    const { email, id } = req.user;
+
+    let user = await this.usersService.findByConditions({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      const data = {
+        email: email,
+        facebookId: id,
+      };
+      user = await this.usersService.generateUser(data);
+    }
+
+    if (!user.facebookId) {
+      user.facebookId = id;
+      await user.save();
     }
 
     return await this.generateToken(user);

@@ -14,6 +14,7 @@ import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthGoogle } from './guards/google.guard';
+import { AuthFacebook } from './guards/facebook.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -59,6 +60,22 @@ export class AuthController {
   @UseGuards(AuthGoogle)
   async googleAuthRedirect(@Req() req: any) {
     const data = await this.authService.googleLogin(req);
+    return {
+      message: 'Login successfully.',
+      data,
+    };
+  }
+
+  @Get('/facebook')
+  @UseGuards(AuthFacebook)
+  async facebookAuth() {
+    return;
+  }
+
+  @Get('/facebook/callback')
+  @UseGuards(AuthFacebook)
+  async facebookAuthRedirect(@Req() req: any) {
+    const data = await this.authService.facebookLogin(req);
     return {
       message: 'Login successfully.',
       data,

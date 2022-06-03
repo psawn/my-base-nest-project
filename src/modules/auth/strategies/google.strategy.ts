@@ -10,15 +10,15 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       clientID: configService.gg.googleId,
       clientSecret: configService.gg.googleSecret,
       callbackURL: 'http://localhost:3000/api/auth/google/callback',
+      passReqToCallback: true,
       scope: ['email', 'profile'],
-      // prompt không hoạt động -> phải tạo 1 class AuthGoogle extend AuthGuard('google') (chưa hiểu)
-      prompt: 'select_account',
       // set accessType = offfline để lấy refresh Token
       // accessType: 'offline',
     });
   }
 
   async validate(
+    req: Request,
     accessToken: string,
     refreshToken: string,
     profile: any,
@@ -26,10 +26,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   ): Promise<any> {
     const { email, id } = profile;
     const user = {
-      email: email,
+      email,
       googleId: id,
       accessToken,
     };
-    done(null, user);
+    return user;
   }
 }
