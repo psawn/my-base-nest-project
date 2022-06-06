@@ -27,6 +27,10 @@ export interface FBConfig {
   facebookSecret: string;
 }
 
+export interface SendgridConfig {
+  sendgridAPIKey: string;
+}
+
 export class ConfigService {
   private readonly envConfig: dotenv.DotenvParseOutput;
   private readonly validationScheme = {
@@ -52,6 +56,10 @@ export class ConfigService {
 
     FACEBOOK_ID: Joi.string().required(),
     FACEBOOK_SECRET: Joi.string().required(),
+    EMAIL: Joi.string().required(),
+    GOOGLE_EMAIL_REFRESH_TOKEN: Joi.string().required(),
+
+    SENDGRID_API_KEY: Joi.string().required(),
   };
 
   constructor() {
@@ -111,6 +119,12 @@ export class ConfigService {
     return {
       facebookId: this.envConfig.FACEBOOK_ID,
       facebookSecret: this.envConfig.FACEBOOK_SECRET,
+    };
+  }
+
+  get sendgrid(): SendgridConfig {
+    return {
+      sendgridAPIKey: this.envConfig.SENDGRID_API_KEY,
     };
   }
 
