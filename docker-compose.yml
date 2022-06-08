@@ -1,0 +1,10 @@
+version: '3.1'
+
+services:
+  local-node:
+    image: test-docker/node-web-app
+    # docker compose will create a network, add network_mode: bridge to connect db
+    network_mode: bridge
+    build: .
+    ports:
+      - 8082:3000
