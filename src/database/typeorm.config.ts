@@ -12,5 +12,5 @@ export const typeOrmConfig: TypeOrmModule = {
   database: configService.db.database,
   logging: true,
   entities: ['dist/**/*.entity{.ts,.js}'],
-  synchronize: false,
+  synchronize: true,
 };

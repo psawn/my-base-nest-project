@@ -8,14 +8,27 @@ import { MailService } from './mail.service';
 export class EmailController {
   constructor(private readonly mailService: MailService) {}
 
-  @Get()
+  @Get('/test/sendgrid')
   @ApiResponse({
     status: 200,
     description: 'Send mail with Sendgrid successfully.',
   })
   @customDecorators()
-  async test() {
+  async testSendgrid() {
     const result = await this.mailService.sendMailWithSendGrid();
+    return {
+      data: result,
+    };
+  }
+
+  @Get('/test/gmail')
+  @ApiResponse({
+    status: 200,
+    description: 'Send mail with Gmail successfully.',
+  })
+  @customDecorators()
+  async testGmail() {
+    const result = await this.mailService.sendMailWithGmail();
     return {
       data: result,
     };

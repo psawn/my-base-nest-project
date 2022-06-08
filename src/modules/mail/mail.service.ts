@@ -12,13 +12,15 @@ export class MailService {
     SendGrid.setApiKey(configService.sendgrid.sendgridAPIKey);
   }
 
-  async sendMail() {
-    await this.mailServer.sendMail({
+  async sendMailWithGmail() {
+    const mail = {
       from: 'bao.doan@savvycomsoftware.com',
       to: 'psawn0972055909@yahoo.com.vn',
       subject: 'Welcome to Nice App! Confirm your Email',
       html: ' <h1>Click the link to verify your email</h1>',
-    });
+    };
+    const transport = await this.mailServer.sendMail(mail);
+    return transport;
   }
 
   async sendMailWithSendGrid() {
