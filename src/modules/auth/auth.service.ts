@@ -1,14 +1,29 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { SignInDto, SignUpDto } from './dto/auth.dto';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import {
+  SignInDto,
+  SignUpDto,
+  ResetPasswordDto,
+  ForgetPasswordDto,
+} from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from 'src/shared/services/config.service';
 import { UsersService } from '../users/user.service';
+import { generate } from 'rand-token';
+import { hashPassword } from 'src/helpers/encrypt.helper';
+import { MailService } from '../mail/mail.service';
+import { MailSubjectConstants } from 'src/common/constants/config.constant';
+
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly mailService: MailService,
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
@@ -106,5 +121,75 @@ export class AuthService {
     );
 
     return { accessToken, refreshToken };
+  }
+
+  async forgotPassword(forgetPasswordDto: ForgetPasswordDto) {
+    const { email } = forgetPasswordDto;
+    const user = await this.usersService.findByConditions({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const randomToken = generate(50);
+    user.token = randomToken;
+    await user.save();
+
+    const token = await this.jwtService.signAsync(
+      {
+        randomToken,
+      },
+      {
+        secret: this.configService.jwt.accessJWTSecret,
+        expiresIn: this.configService.jwt.accessJWTExpire,
+      },
+    );
+
+    const data = {
+      to: email,
+      subject: MailSubjectConstants.FORGOT_PASSWORDS,
+      html: `<h3>Click <a href="/reset-password?token=${token}">here</a> to set new password</h3>`,
+    };
+    await this.mailService.createMailAndSend(data);
+
+    // return token;
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { token, password } = resetPasswordDto;
+    let decoded = null;
+
+    try {
+      decoded = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.jwt.accessJWTSecret,
+      });
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    const user = await this.usersService.findByConditions({
+      where: {
+        token: decoded.randomToken,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('Not found token');
+    }
+
+    const { iat, exp } = decoded;
+    const currentTime = new Date().getTime() / 1000;
+
+    if (currentTime < iat || currentTime > exp) {
+      throw new UnauthorizedException('Expired token');
+    }
+
+    user.password = await hashPassword(password);
+    user.token = null;
+    await user.save();
   }
 }

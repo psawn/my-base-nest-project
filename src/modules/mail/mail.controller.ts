@@ -15,7 +15,7 @@ export class EmailController {
   })
   @customDecorators()
   async testSendgrid() {
-    const result = await this.mailService.sendMailWithSendGrid();
+    const result = await this.mailService.testSendMailWithSendGrid();
     return {
       data: result,
     };
@@ -28,7 +28,7 @@ export class EmailController {
   })
   @customDecorators()
   async testGmail() {
-    const result = await this.mailService.sendMailWithGmail();
+    const result = await this.mailService.testSendMailWithGmail();
     return {
       data: result,
     };

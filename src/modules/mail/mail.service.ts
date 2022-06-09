@@ -12,7 +12,7 @@ export class MailService {
     SendGrid.setApiKey(configService.sendgrid.sendgridAPIKey);
   }
 
-  async sendMailWithGmail() {
+  async testSendMailWithGmail() {
     const mail = {
       from: 'bao.doan@savvycomsoftware.com',
       to: 'psawn0972055909@yahoo.com.vn',
@@ -23,7 +23,7 @@ export class MailService {
     return transport;
   }
 
-  async sendMailWithSendGrid() {
+  async testSendMailWithSendGrid() {
     const mail = {
       to: 'psawn0972055909@yahoo.com.vn',
       subject: 'Greeting Message from NestJS Sendgrid',
@@ -33,5 +33,20 @@ export class MailService {
     };
     const transport = await SendGrid.send(mail);
     return transport;
+  }
+
+  async sendMail(mail: any) {
+    const transport = await SendGrid.send(mail);
+    return transport;
+  }
+
+  async createMailAndSend(data: any) {
+    const mail = {
+      from: 'mrpsawn1996@gmail.com',
+      to: data.to,
+      subject: data.subject,
+      html: data.html,
+    };
+    await this.sendMail(mail);
   }
 }

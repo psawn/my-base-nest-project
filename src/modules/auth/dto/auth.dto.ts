@@ -44,3 +44,31 @@ export class SignInDto {
   })
   password: string;
 }
+
+export class ForgetPasswordDto {
+  @IsNotEmpty()
+  @IsEmail()
+  @ApiProperty({
+    description: 'Email',
+    example: 'test@gmail.com',
+  })
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: 'Token',
+    example: 'eyJhbGciOiJI...',
+  })
+  token: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: 'Password',
+    example: '123456',
+  })
+  password: string;
+}

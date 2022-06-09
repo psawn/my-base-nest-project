@@ -10,7 +10,12 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { customDecorators } from 'src/common/custom-decorators/custom-response.decorator';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
-import { SignInDto, SignUpDto } from './dto/auth.dto';
+import {
+  ForgetPasswordDto,
+  ResetPasswordDto,
+  SignInDto,
+  SignUpDto,
+} from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthGoogle } from './guards/google.guard';
@@ -79,6 +84,40 @@ export class AuthController {
     return {
       message: 'Login successfully.',
       data,
+    };
+  }
+
+  @Post('/forgot-password')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    description: 'Send mail reset password successfully.',
+  })
+  @customDecorators()
+  async forgetPassword(
+    @Body(ValidationPipe) forgetPasswordDto: ForgetPasswordDto,
+  ) {
+    const token = await this.authService.forgotPassword(forgetPasswordDto);
+    return {
+      message: 'Reset password successfully.',
+      token,
+    };
+  }
+
+  @Post('/reset-password')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    description: 'Reset password successfully.',
+  })
+  @customDecorators()
+  async resetPassword(
+    @Body(new ValidationPipe({ whitelist: true }))
+    resetPasswordDto: ResetPasswordDto,
+  ) {
+    await this.authService.resetPassword(resetPasswordDto);
+    return {
+      message: 'Reset password successfully.',
     };
   }
 }

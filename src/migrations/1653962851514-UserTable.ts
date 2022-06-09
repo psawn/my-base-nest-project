@@ -58,6 +58,11 @@ export class UserTable1653962851514 implements MigrationInterface {
             type: 'varchar',
             isNullable: true,
           },
+          {
+            name: 'token',
+            type: 'varchar',
+            isNullable: true,
+          },
         ],
       }),
     );

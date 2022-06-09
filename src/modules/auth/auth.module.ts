@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from 'src/shared/services/config.service';
 import { CaslModule } from '../casl/casl.module';
+import { MailModule } from '../mail/mail.module';
 import { User } from '../users/user.entity';
 import { UsersService } from '../users/user.service';
 import { AuthController } from './auth.controller';
@@ -23,6 +24,7 @@ const configService = new ConfigService();
       },
     }),
     CaslModule,
+    MailModule,
   ],
   controllers: [AuthController],
   providers: [

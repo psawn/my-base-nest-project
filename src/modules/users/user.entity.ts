@@ -43,6 +43,9 @@ export class User extends BaseEntity {
   @Column({ name: 'facebook_id', nullable: true })
   facebookId: string;
 
+  @Column({ name: 'token', nullable: true })
+  token: string;
+
   async validatePassword(password: string): Promise<boolean> {
     if (this.password && password && String(password).trim()) {
       return await bcrypt.compare(password, this.password);
