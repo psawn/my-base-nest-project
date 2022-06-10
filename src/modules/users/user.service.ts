@@ -46,12 +46,16 @@ export class UsersService {
   }
 
   async update(request: any, updateField: any) {
-    const user = await this.userRepository.findOne({
-      where: {
-        id: request.user.id,
-      },
-    });
-    const data = { ...updateField, id: user.id };
+    // const query = this.userRepository.createQueryBuilder('users');
+    // const rs = await query
+    //   .update(User)
+    //   .set(updateField)
+    //   .where('id = :id', { id: request.user.id })
+    //   .returning('*')
+    //   .execute();
+    // console.log(rs.raw[0]);
+    // save not return all the entire object
+    const data = { ...updateField, id: request.user.id };
     return await this.userRepository.save(data);
   }
 
@@ -96,11 +100,13 @@ export class UsersService {
     if (bcrypt.compareSync(currentPassword, user.password) === false) {
       throw new BadRequestException('Current password is incorrect');
     }
+
     if (bcrypt.compareSync(newPassword, user.password) === true) {
       throw new BadRequestException(
         'New password need be different from current password',
       );
     }
+
     user.password = await hashPassword(newPassword);
     await user.save();
   }

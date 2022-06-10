@@ -12,6 +12,7 @@ import { customDecorators } from 'src/common/custom-decorators/custom-response.d
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import {
   ForgetPasswordDto,
+  RefreshTokenDto,
   ResetPasswordDto,
   SignInDto,
   SignUpDto,
@@ -118,6 +119,25 @@ export class AuthController {
     await this.authService.resetPassword(resetPasswordDto);
     return {
       message: 'Reset password successfully.',
+    };
+  }
+
+  @Post('/check-refresh-token')
+  @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    description: 'Get access token successfully.',
+  })
+  @customDecorators()
+  async checkRefreshToken(
+    @Body(ValidationPipe) refreshTokenDto: RefreshTokenDto,
+  ) {
+    const accessToken = await this.authService.checkRefreshToken(
+      refreshTokenDto,
+    );
+    return {
+      message: 'Check refresh token successfully.',
+      accessToken,
     };
   }
 }

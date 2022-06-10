@@ -73,7 +73,6 @@ export class UsersController {
     const data = await this.usersService.update(request, updateUserDto);
     return {
       message: 'Update user successfully.',
-      data: data,
     };
   }
 

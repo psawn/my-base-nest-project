@@ -72,3 +72,13 @@ export class ResetPasswordDto {
   })
   password: string;
 }
+
+export class RefreshTokenDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: 'Token',
+    example: 'eyJhbGciOiJI...',
+  })
+  refreshToken: string;
+}

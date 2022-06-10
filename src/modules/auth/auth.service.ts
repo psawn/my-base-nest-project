@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import {
@@ -8,6 +9,7 @@ import {
   SignUpDto,
   ResetPasswordDto,
   ForgetPasswordDto,
+  RefreshTokenDto,
 } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from 'src/shared/services/config.service';
@@ -112,13 +114,10 @@ export class AuthService {
       secret: this.configService.jwt.accessJWTSecret,
       expiresIn: this.configService.jwt.accessJWTExpire,
     });
-    const refreshToken = await this.jwtService.signAsync(
-      { id: user.id },
-      {
-        secret: this.configService.jwt.accessJWTSecret,
-        expiresIn: this.configService.jwt.accessJWTExpire,
-      },
-    );
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      secret: this.configService.jwt.refreshJWTSecret,
+      expiresIn: this.configService.jwt.refreshJWTExpire,
+    });
 
     return { accessToken, refreshToken };
   }
@@ -191,5 +190,35 @@ export class AuthService {
     user.password = await hashPassword(password);
     user.token = null;
     await user.save();
+  }
+
+  async checkRefreshToken(refreshTokenDto: RefreshTokenDto) {
+    const { refreshToken } = refreshTokenDto;
+    let decoded = null;
+
+    try {
+      decoded = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.configService.jwt.refreshJWTSecret,
+      });
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    if (!decoded) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    const user = await this.usersService.findByConditions({
+      where: {
+        email: decoded.email,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const tokens = await this.generateToken(user);
+    return tokens.accessToken;
   }
 }
