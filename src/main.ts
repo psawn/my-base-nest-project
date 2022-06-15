@@ -1,9 +1,10 @@
 import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SharedModule } from './shared/shared.module';
 import { ConfigService } from './shared/services/config.service';
 import { setupSwagger } from './swagger';
+import { AllExceptionsFilter } from './common/filters/all-exception.filter';
 
 async function bootstrap() {
   const logger = new Logger();
@@ -14,6 +15,11 @@ async function bootstrap() {
   // const configService = new ConfigService();
 
   setupSwagger(app);
+
+  // có thể dùng html-exception.filter
+  // const { httpAdapter } = app.get(HttpAdapterHost);
+  // app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+
   await app.listen(configService.port);
   logger.log(`Application listening on port ${configService.port}`);
 }

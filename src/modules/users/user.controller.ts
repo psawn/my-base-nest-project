@@ -6,10 +6,10 @@ import {
   ForbiddenException,
   Get,
   Param,
-  ParseUUIDPipe,
   Patch,
   Query,
   Req,
+  UseFilters,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -19,6 +19,7 @@ import { customDecorators } from 'src/common/custom-decorators/custom-response.d
 import { CheckPolicies } from 'src/common/custom-decorators/policies.decorator';
 import { Public } from 'src/common/custom-decorators/public.decorator';
 import { Roles } from 'src/common/custom-decorators/role.decorator';
+import { HttpExceptionFilter } from 'src/common/filters/html-exception.filter';
 import {
   Action,
   AppAbility,
@@ -70,26 +71,28 @@ export class UsersController {
     // set whitelist = true sẽ loại bỏ các property không được định nghĩa
     @Body(new ValidationPipe({ whitelist: true })) updateUserDto: UpdateUserDto,
   ) {
-    const data = await this.usersService.update(request, updateUserDto);
+    await this.usersService.update(request, updateUserDto);
     return {
       message: 'Update user successfully.',
     };
   }
 
   @Get('/:id')
+  // có thể dùng all-exception.filter
+  @UseFilters(new HttpExceptionFilter())
   @ApiResponse({
     status: 200,
     description: 'Get user successfully.',
   })
   @customDecorators()
-  async getById(@Param('id', ParseUUIDPipe) id: string, @Req() request: any) {
+  async getById(@Param() id: string, @Req() request: any) {
     // không thể sử dụng decorator -> phèn
     const user = new User();
     user.id = id;
     const ability = this.caslAbilityFactory.createForUser(request.user);
 
     if (ability.can(Action.Read, user) == false) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('test filer');
     }
 
     const data = await this.usersService.findByConditions({
@@ -110,10 +113,7 @@ export class UsersController {
     description: 'Delete user successfully.',
   })
   @customDecorators()
-  async softDelete(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Req() request: any,
-  ) {
+  async softDelete(@Param() id: string, @Req() request: any) {
     const user = new User();
     user.id = id;
     const ability = this.caslAbilityFactory.createForUser(request.user);
